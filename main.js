@@ -18,20 +18,22 @@ document.querySelector('#app').innerHTML = `
 
 const socket = io('http://localhost:3000')
 
+const room = '1234'
+
 socket.on('connect', () => {
   displayInfo('Connected with ID: ' + socket.id, 'id')
 })
 
-socket.emit('join-room', '1234')
-
-messages.map(message => socket.emit('send-message', message))
-
-socket.on('receive-message', message => {
-  displayMessage(message)
-})
+socket.emit('join-room', room)
 
 socket.on('joined-room', room => {
   displayInfo('Joined room: ' + room, 'room')
+})
+
+messages.map(message => socket.emit('send-message', message, room))
+
+socket.on('receive-message', message => {
+  displayMessage(message)
 })
 
 function displayInfo(info, id) {
